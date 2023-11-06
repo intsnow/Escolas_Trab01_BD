@@ -6,24 +6,26 @@ use Escola;
 
 
 #		Consulta 1)
-SELECT    esc.nome AS nome_Escola, cid.nome AS Cidade_Escola #, pes.nome
-FROM 	  escola AS esc, cidade AS cid, pessoa AS pes, aluno AS alu 
-WHERE  	  esc.codCidade = cid.codigo
-AND	 	  pes.codigo = alu.codigo  
-AND  	  esc.codigo = pes.codEscola
-AND 	  esc.codCidade = pes.codCidade
-GROUP BY  esc.codigo, esc.nome;
+SELECT      esc.nome AS nome_Escola, cid.nome AS Cidade_Escola 
+
+FROM 	    escola AS esc, cidade AS cid, pessoa AS pes, aluno AS alu 
+WHERE  	    esc.codCidade = cid.codigo
+AND	 	    pes.codigo = alu.codigo  
+AND  	    esc.codigo = pes.codEscola
+AND 	    esc.codCidade = pes.codCidade
+GROUP BY	esc.nome, cid.nome;
 
 
 
  #		Consulta 2)
-SELECT   pes.nome AS nome_Aluno, alu.matricula AS matri_Aluno, pes.codEscola AS cod_Escola
-FROM 	 pessoa AS pes, aluno AS alu 
-WHERE 	 pes.codigo = alu.codigo
-AND 	 alu.codigo 
+SELECT	pes.nome AS nome_Aluno, alu.matricula AS matri_Aluno,
+		pes.codEscola AS cod_Escola
+ 
+FROM 	pessoa AS pes, aluno AS alu 
+WHERE 	pes.codigo = alu.codigo
+AND 	alu.codigo 
 NOT IN 
-(
-	SELECT alu.codigo AS cod_Aluno
+(	SELECT alu.codigo AS cod_Aluno
 	FROM contato AS cont, aluno AS alu
 	WHERE cont.codAluno = alu.codigo
 );
@@ -31,66 +33,82 @@ NOT IN
  
  
  #		Consulta 3)
- SELECT    t.codigo AS cod_Turma, t.nome AS nome_Turma, pes.codEscola AS cod_Escola
- FROM  	   turma AS t, aluno AS alu, pessoa AS pes
- WHERE	   t.codigo = alu.codTurma 
- AND	   t.codEscola = pes.codEscola
- AND	   alu.codigo = pes.codigo
- GROUP BY  t.codigo, t.nome, pes.codEscola
- HAVING	   count(t.codigo) > 5 ;
+ SELECT     t.codigo AS cod_Turma, t.nome AS nome_Turma,
+			pes.codEscola AS cod_Escola
+ 
+ FROM  	    turma AS t, aluno AS alu, pessoa AS pes
+ WHERE	    t.codigo = alu.codTurma 
+ AND	    t.codEscola = pes.codEscola
+ AND	    alu.codigo = pes.codigo
+ GROUP BY	t.codigo, t.nome, pes.codEscola
+ HAVING	    count(t.codigo) > 5 ;
  
  
  
 #		Consulta 4)
-SELECT   		pes.codEscola AS cod_Escola, pes.nome AS nome_Prof, prof.codigo AS cod_Prof, prof.titulo AS Titulacao
-FROM			ministra AS min  JOIN ( pessoa AS pes, professor AS prof )
-ON				prof.codigo = pes.codigo  AND  min.codProf = pes.codigo
-GROUP BY 		prof.codigo
-HAVING 			count(DISTINCT min.codTurma) >= 3
-ORDER BY 		pes.codEscola, pes.nome;
+SELECT	    pes.codEscola AS cod_Escola, pes.nome AS nome_Prof,
+			prof.codigo AS cod_Prof, prof.titulo AS Titulacao
+            
+FROM		ministra AS min  JOIN ( pessoa AS pes, professor AS prof )
+ON		    prof.codigo = pes.codigo  AND  min.codProf = pes.codigo
+GROUP BY    prof.codigo, prof.titulo, pes.codEscola, pes.nome
+HAVING 	    count(DISTINCT min.codTurma) >= 3
+ORDER BY	pes.codEscola, pes.nome;
  
  
 
   #		Consulta 5)	CORRIGIDA!
-SELECT 	  *
+SELECT	*
 FROM 
 (		#	Relaciona Num_Profs para cada disciplina POR TURMA
 
-	SELECT	  esc.nome AS nome_Escola, disc.nome AS nome_Disciplina,
-			  count(DISTINCT min.codProf) AS numProfs_Ministram_MesmaTurma, tur.nome AS nome_Turma  
-	FROM 	  ( escola AS esc, professor AS prof ) 
-	JOIN 	  (  disciplina AS disc, ministra AS min, turma AS tur )
-	ON 		  esc.codigo = min.codEsc 		AND disc.codigo = min.codDisc
-	AND 	  prof.codigo = min.codProf 	AND tur.codigo = min.codTurma
-	GROUP BY  disc.nome, esc.nome, tur.nome 
-	ORDER BY  esc.nome, disc.nome, tur.nome
+	SELECT	    esc.nome AS nome_Escola, disc.nome AS nome_Disciplina,
+			    count(DISTINCT min.codProf) AS numProfs_Ministram_MesmaTurma, tur.nome AS nome_Turma  
+                
+	FROM 	    ( escola AS esc, professor AS prof ) 
+	JOIN 	    
+    (	disciplina AS disc,
+		ministra AS min, turma AS tur
+	)
+	ON 		    esc.codigo = min.codEsc 
+    AND 		disc.codigo = min.codDisc
+	AND 	    prof.codigo = min.codProf
+ 	AND 		tur.codigo = min.codTurma
+	GROUP BY    esc.nome, disc.nome, tur.nome 
+	ORDER BY 	esc.nome, disc.nome, tur.nome
 )   AS f
 JOIN
 (		#	Relaciona Num_Profs_Totais de cada disciplina POR ESCOLA
 	
-	SELECT    esc.nome AS nome_Escola, disc.nome AS nome_Disciplina,
-			  count(DISTINCT min.codProf ) AS numProfs_Total_porEscola
-	FROM 	  ( escola AS esc, professor AS prof ) 
-	JOIN 	  ( disciplina AS disc, ministra AS min )
-	ON 		  esc.codigo = min.codEsc 		AND disc.codigo = min.codDisc
-	AND 	  prof.codigo = min.codProf 	
-	GROUP BY  disc.nome, esc.nome
-	ORDER BY  esc.nome, disc.nome
+	SELECT      esc.nome AS nome_Escola, disc.nome AS nome_Disciplina,
+			    count(DISTINCT min.codProf ) AS numProfs_Total_porEscola
+	FROM 	    ( escola AS esc, professor AS prof ) 
+	JOIN	   	    
+	(	disciplina AS disc,
+		ministra AS min 
+	)
+	ON 		    esc.codigo = min.codEsc
+    AND 		disc.codigo = min.codDisc
+	AND 	    prof.codigo = min.codProf 	
+	GROUP BY	esc.nome, disc.nome
+	ORDER BY    esc.nome, disc.nome
 ) 	AS g
-ON 		  f.nome_Escola = g.nome_Escola
-AND 	  f.nome_Disciplina = g.nome_Disciplina
-ORDER BY  f.nome_Escola, f.nome_Disciplina, nome_Turma;	
+ON 		  	f.nome_Escola = g.nome_Escola
+AND 	  	f.nome_Disciplina = g.nome_Disciplina
+ORDER BY	f.nome_Escola, f.nome_Disciplina, nome_Turma;	
 
  
  
  #		Consulta 6)
-SELECT 	  esc.nome AS nome_Escola, pes.nome AS nome_Diretor, pes.codCidade AS cod_Cid_Prof, esc.codCidade AS cod_Cid_Escola
-FROM 	  escola AS esc, pessoa AS pes, professor AS prof
-WHERE 	  esc.codigo = pes.codEscola
-AND		  pes.codigo = prof.codigo
-AND		  pes.codCidade != esc.codCidade
-AND		  prof.isDiretor = true
-ORDER BY  esc.nome ;
+SELECT	  	esc.nome AS nome_Escola, pes.nome AS nome_Diretor,
+			pes.codCidade AS cod_Cid_Prof, esc.codCidade AS cod_Cid_Escola
+            
+FROM 	  	escola AS esc, pessoa AS pes, professor AS prof
+WHERE 	  	esc.codigo = pes.codEscola
+AND		  	pes.codigo = prof.codigo
+AND		  	pes.codCidade != esc.codCidade
+AND		  	prof.isDiretor = true
+ORDER BY	esc.nome ;
 
 
  
@@ -98,21 +116,27 @@ ORDER BY  esc.nome ;
  
 	#		Lista Escolas e num_turmas de cada:
     
-SELECT	  esc.nome AS nome_Escola, count(DISTINCT tur.codigo) AS num_Turmas, num_profs_ministra_disciplina
-FROM 	  ( escola AS esc, turma AS tur )
+SELECT	  esc.nome AS nome_Escola, count(DISTINCT tur.codigo) AS num_Turmas,
+		  num_profs_ministra_disciplina
+          
+FROM 	  escola AS esc, turma AS tur 
 JOIN
 (	 #		Lista Escolas e num_prof que ministra_disciplina >= 1 
    	
-	SELECT		esc.nome AS nome_Escola, count(DISTINCT min.codProf) AS num_profs_ministra_disciplina
+	SELECT		esc.nome AS nome_Escola,
+				count(DISTINCT min.codProf) AS num_profs_ministra_disciplina
+    
 	FROM 		professor AS prof, ministra AS min, escola AS esc
 	WHERE 		prof.codigo = min.codProf
 	AND 		esc.codigo = min.codEsc
-	GROUP BY 	esc.codigo
+	GROUP BY 	esc.nome
 )	AS f
-ON		  esc.nome = f.nome_Escola
-WHERE 	  esc.codigo = tur.codEscola  
-GROUP BY  esc.codigo, num_profs_ministra_disciplina
-ORDER BY  esc.nome ;
+
+ON			nome_Escola = f.nome_Escola
+WHERE		esc.nome = f.nome_Escola
+AND			tur.codEscola = esc.codigo
+GROUP BY	esc.nome, num_profs_ministra_disciplina
+ORDER BY  	esc.nome;
     
 
 
@@ -121,7 +145,7 @@ ORDER BY  esc.nome ;
 SELECT 	 esc.nome AS nome_Escola, count(DISTINCT alu.codigo) AS num_Alunos, 
 		 conta_profs.num_Profs_ministram_algumaDisc AS num_Profs_ministram_algumaDisc,
 		 CAST( (count(DISTINCT alu.codigo) / conta_profs.num_Profs_ministram_algumaDisc) AS DECIMAL (10,2) ) AS razao_aluno_prof 
-            
+         
 FROM	 pessoa AS pes, aluno AS alu, escola AS esc 
 JOIN
 (	#		Numero de Profs que ministram minimamente 1 disciplina
@@ -159,7 +183,7 @@ FROM	  pessoa AS pes, ministra AS min, escola AS esc
 WHERE	  pes.codigo = min.codProf
 AND 	  pes.codEscola = min.codEsc
 AND  	  pes.codEscola = esc.codigo
-GROUP BY  pes.nome, esc.codigo
+GROUP BY  esc.nome, pes.nome
 HAVING	  numTurmas_Ministradas = 1 
 ORDER BY  esc.nome, pes.nome ;
 
