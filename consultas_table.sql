@@ -129,7 +129,7 @@ JOIN
 (	 #		Lista Escolas e num_prof que ministra_disciplina >= 1 
 
 SELECT		esc.nome AS nome_Escola,
-count(DISTINCT min.codProf) AS num_profs_ministra_disciplina
+			count(DISTINCT min.codProf) AS num_profs_ministra_disciplina
 
 FROM 		professor AS prof, ministra AS min, escola AS esc
 WHERE 		prof.codigo = min.codProf
