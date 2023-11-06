@@ -153,35 +153,16 @@ ORDER BY  esc.nome, alu.matricula, cont.nome ;
 
 
 
-/*		A FAZER...
 #		Consulta 10)	
-SELECT    esc.nome AS nome_Escola, pes.nome AS nome_Professor, tur.nome AS Turma_Ministrada
-FROM 	  pessoa AS pes INNER JOIN ( ministra AS min, turma AS tur, escola AS esc )
-ON		  pes.codEscola = min.codEsc
-AND		  pes.codigo = min.codProf
-AND		  pes.codEscola = esc.codigo
-AND 	  min.codTurma = tur.codigo
-AND	      min.codEsc = esc.codigo
-GROUP BY  esc.nome, pes.nome, tur.nome
-HAVING 	  count(DISTINCT pes.nome) = 1
-ORDER BY  esc.nome, pes.nome;
+SELECT    esc.nome AS nome_Escola, pes.nome AS nome_Professor, count(min.codTurma) AS numTurmas_Ministradas
+FROM	  pessoa AS pes, ministra AS min, escola AS esc
+WHERE	  pes.codigo = min.codProf
+AND 	  pes.codEscola = min.codEsc
+AND  	  pes.codEscola = esc.codigo
+GROUP BY  pes.nome, esc.codigo
+HAVING	  numTurmas_Ministradas = 1 
+ORDER BY  esc.nome, pes.nome ;
 
-SELECT vezes AS num_Vezes_Prof, nome_Escola, nome_Professor, Turma_Ministrada
-FROM (
-    SELECT    esc.nome AS nome_Escola, pes.nome AS nome_Professor, tur.nome AS Turma_Ministrada, COUNT(pes.nome) as vezes
-    FROM 	  pessoa AS pes, professor AS prof, ministra AS min, turma AS tur, escola AS esc
-    WHERE	  pes.codigo = prof.codigo
-    AND		  pes.codEscola = min.codEsc
-    AND		  pes.codEscola = esc.codigo
-    AND		  prof.codigo = min.codProf
-    AND 	  min.codTurma = tur.codigo
-    AND	      min.codEsc = esc.codigo
-    GROUP BY  esc.nome, pes.nome, tur.nome
-) as sub
-GROUP BY  sub.nome_Escola, sub.nome_Professor, sub.Turma_Ministrada
-HAVING 	  SUM(vezes) = 1 
-ORDER BY  nome_Escola, nome_Professor;
- */
  
  
  
