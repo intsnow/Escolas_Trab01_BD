@@ -48,6 +48,12 @@ INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
 VALUES (12, "Iza Adidas ", "27 98655-8789", 27, 1);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
 VALUES (13, "Larissa ", "13 98642- 8721", 27, 2);
+INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
+VALUES (14, "Ferrnando ", "27 98325- 2145", 27, 1);
+INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
+VALUES (15, "Amanda ", "27 94369- 9723", 27, 1);
+INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
+VALUES (16, "Emanuel ", "21 94532- 4321", 21, 2);
 
  
 INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
@@ -60,6 +66,12 @@ INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
 VALUES (11, "34.526.914-5", "645.327.185-6","Professor", false);
 INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
 VALUES (13, "57.845.241-5", "451.441.254-6","Professor", false);
+INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
+VALUES (14, "32.423.213-8", "443.211.564-4","Doutor", false);
+INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
+VALUES (15, "23.354.751-5", "423.321.874-2","Professor", false);
+INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
+VALUES (16, "54.124.325-2", "431.546.687-3","Professor", false);
 
 
 
@@ -108,9 +120,17 @@ VALUES (10, 3, 103, 1);
 INSERT INTO ministra (codProf, codDisc, codTurma, codEsc)
 VALUES (10, 4, 103, 1);
 INSERT INTO ministra (codProf, codDisc, codTurma, codEsc)
+VALUES (11, 1, 103, 1);
+INSERT INTO ministra (codProf, codDisc, codTurma, codEsc)
 VALUES (11, 5, 103, 1);
 INSERT INTO ministra (codProf, codDisc, codTurma, codEsc)
 VALUES (13, 4, 601, 2);
+INSERT INTO ministra (codProf, codDisc, codTurma, codEsc)
+VALUES (14, 4, 103, 1);
+INSERT INTO ministra (codProf, codDisc, codTurma, codEsc)
+VALUES (15, 4, 101, 1);
+INSERT INTO ministra (codProf, codDisc, codTurma, codEsc)
+VALUES (16, 2, 601, 2);
 
 
 INSERT INTO aluno (codigo, matricula, dataNasc, codTurma)
