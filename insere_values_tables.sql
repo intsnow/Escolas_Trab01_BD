@@ -65,7 +65,7 @@ VALUES (10, "65.987.352-8", "987.654.321-9","Professor", false);
 INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
 VALUES (11, "34.526.914-5", "645.327.185-6","Professor", false);
 INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
-VALUES (13, "57.845.241-5", "451.441.254-6","Professor", false);
+VALUES (13, "57.845.241-5", "451.441.254-6","Professor", true);
 INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
 VALUES (14, "32.423.213-8", "443.211.564-4","Doutor", false);
 INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
@@ -126,11 +126,22 @@ VALUES (11, 5, 103, 1);
 INSERT INTO ministra (codProf, codDisc, codTurma, codEsc)
 VALUES (13, 4, 601, 2);
 INSERT INTO ministra (codProf, codDisc, codTurma, codEsc)
-VALUES (14, 4, 103, 1);
+VALUES (14, 2, 103, 1);
 INSERT INTO ministra (codProf, codDisc, codTurma, codEsc)
 VALUES (15, 4, 101, 1);
 INSERT INTO ministra (codProf, codDisc, codTurma, codEsc)
 VALUES (16, 2, 601, 2);
+
+
+
+INSERT INTO direcao (codEsc, codProf)
+VALUES (1, 2);
+INSERT INTO direcao (codEsc, codProf)
+VALUES (1, 3);
+INSERT INTO direcao (codEsc, codProf)
+VALUES (2, 13);
+
+
 
 
 INSERT INTO aluno (codigo, matricula, dataNasc, codTurma)

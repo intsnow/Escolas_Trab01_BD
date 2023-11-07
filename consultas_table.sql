@@ -154,6 +154,7 @@ SELECT 		esc.nome AS nome_Escola, count(DISTINCT alu.codigo) AS num_Alunos,
 FROM	 	pessoa AS pes, aluno AS alu, escola AS esc 
 JOIN
 (	#		Numero de Profs que ministram minimamente 1 disciplina
+
 	SELECT 	esc.nome AS nome_Escola,  count(DISTINCT prof.codigo) AS num_Profs_ministram_algumaDisc
     
 	FROM		escola AS esc, professor AS prof, ministra AS min, pessoa AS pes
@@ -162,6 +163,7 @@ JOIN
 	AND 		prof.codigo = min.codProf
 	AND			prof.codigo = pes.codigo
 	GROUP BY	esc.codigo
+    
 )	AS conta_profs
 WHERE	    pes.codigo = alu.codigo
 AND		    pes.codEscola = esc.codigo	
@@ -201,6 +203,7 @@ ORDER BY	esc.nome, pes.nome ;
 #		Consultas gerais para visualiazcao total
 select * from cidade;
 select * from escola;
+select * from direcao;
 select * from aluno;
 select * from pessoa;
 select * from professor;

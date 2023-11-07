@@ -1,47 +1,48 @@
+#drop schema escola;
 #create schema escola;
 use Escola;
 
 	#	Criando tabelas
   
   
-CREATE TABLE Cidade(
+CREATE TABLE IF NOT EXISTS Cidade(
 	codigo integer not null,
     nome varchar(20) not null,
     primary key (codigo)
 );
 
 
-CREATE TABLE Escola(
+
+CREATE TABLE IF NOT EXISTS Escola(
 	codigo integer not null,
     nome varchar(25) not null,
     codCidade integer not null,
     primary key ( codigo ),
-    foreign key (codCidade) references Cidade(codigo)
+	foreign key (codCidade) references Cidade(codigo)
 );
 
 
-CREATE TABLE Turma(
+CREATE TABLE IF NOT EXISTS Turma(
 	codigo integer not null,
     nome varchar(20) not null,
     codEscola integer not null,
     primary key (codigo),
-    foreign key (codEscola) references Escola(codigo)
+	foreign key (codEscola) references Escola(codigo)
 );
     
     
-CREATE TABLE Pessoa(
+CREATE TABLE IF NOT EXISTS Pessoa(
 	codigo integer not null,
     nome varchar(20) not null,
     telefone varchar(14) not null,
     codCidade integer not null,
     codEscola integer not null,
-    primary key (codigo),
-    foreign key (codCidade) references Cidade (codigo),
+    primary key (codigo),foreign key (codCidade) references Cidade (codigo),
     foreign key (codEscola) references Escola (codigo)
-);
+    );
 
 
-CREATE TABLE Aluno(
+CREATE TABLE IF NOT EXISTS Aluno(
 	codigo integer not null,
     matricula varchar(12) not null,
     dataNasc varchar(10) not null,
@@ -52,7 +53,7 @@ CREATE TABLE Aluno(
 );
 
 
-CREATE TABLE Contato(
+CREATE TABLE IF NOT EXISTS Contato(
 	nome varchar(20) not null,
     telefone varchar(14) not null,
     codAluno integer not null,
@@ -63,7 +64,7 @@ CREATE TABLE Contato(
 );
 
 
-CREATE TABLE Professor(
+CREATE TABLE IF NOT EXISTS Professor(
 	codigo integer not null,
     RG varchar(15) not null,
     CPF varchar(15) not null,
@@ -74,21 +75,65 @@ CREATE TABLE Professor(
 );
     
     
-CREATE TABLE Disciplina (
+CREATE TABLE IF NOT EXISTS Disciplina (
 	codigo integer not null,
     nome varchar(20) not null,
     primary key (codigo)
 );
 
 
-CREATE TABLE Ministra(
-	codProf integer not null,
+CREATE TABLE IF NOT EXISTS Ministra(
+	codProf integer AUTO_INCREMENT,
     codDisc integer not null,
     codTurma integer not null,
     codEsc integer not null,
-    primary key (codProf, codDisc, codTurma, codEsc),
-    foreign key (codProf) references Professor(codigo),
-    foreign key (codDisc) references Disciplina(codigo),
-    foreign key (codTurma) references Turma(codigo),
-    foreign key (codEsc) references Escola(codigo)
+    primary key (codProf, codDisc, codTurma, codEsc) ,
+    
+    CONSTRAINT fk_ministra_codDisc 
+		foreign key (codDisc) 
+		references Disciplina(codigo)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+     
+     CONSTRAINT fk_ministra_codTurma 
+		foreign key (codTurma) 
+		references Turma(codigo)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    
+	CONSTRAINT fk_ministra_codEsc
+		foreign key (codEsc)
+		references Escola(codigo)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_ministra_codProf 
+		foreign key (codProf) 
+		references Professor(codigo)	
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+		
 );
+
+
+CREATE TABLE IF NOT EXISTS Direcao
+(
+	codEsc	integer not null,
+    codProf integer not null,
+    
+    CONSTRAINT fk_direcao_codEsc
+		foreign key (codEsc) references Escola(codigo)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE	,
+        
+    CONSTRAINT fk_direcao_codProf
+		foreign key (codProf) references Professor(codigo)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE		
+);
+
+
+
+
+
+

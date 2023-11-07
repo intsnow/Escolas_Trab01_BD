@@ -1,72 +1,175 @@
 use Escola;
 
 
-	#		Alteracao 1)
-
-#	 1.1)	Altera todos os contatos de aluno com codigo 7 ao aluno de codigo 5 :
-UPDATE  contato 
-SET 	codAluno = 5
-WHERE 	codAluno = 7;
-
-#	 1.EXTRA)	Reverte ao original :
-UPDATE  contato 
-SET 	codAluno = 7
-WHERE 	codAluno = 5;
-
-SELECT  * FROM 	contato ;
 
 
-
-	#		Alteracao 2)
+	#		Alteracao 1 )
     
-#	 2.1)	 Dropa FK restrita :
-ALTER TABLE ministra 
-DROP CONSTRAINT ministra_ibfk_1;
+    
+	#	 1.1 )	Atribuir um codigo existente às vars 
+SET		@codAluno_replacing = 5 ;
+SET 	@codAluno_isReplaced = 7 ;
 
-#	 2.2)	 Add FK em CASCATA
-ALTER TABLE ministra 
-ADD CONSTRAINT ministra_ibfk_1_Cascade
-FOREIGN KEY (codProf) REFERENCES Professor(codigo)
-ON DELETE CASCADE;
 
-#	 2.3) 	Remoçao de Professor_Cod = 2, da Escola_Cod = 1 :
-DELETE FROM Professor 
-WHERE	codigo = 2;
+	#	 1.2 )	Altera todos os contatos de Aluno_Replaced ao Aluno_isReplacing :
+UPDATE  contato 
+SET 	codAluno = @codAluno_replacing
+WHERE 	codAluno = @codAluno_isReplaced ;
 
-#  	 2.4) 	Atribuir novo diretor Professor_Cod = 11 à Escola_Cod = 1 :
-UPDATE  professor
-SET		isDiretor = true
-WHERE   codigo = 11 ;
 
-#	 2.EXTRA)		Adicionar Professor_Cod = 2, na Escola_Cod = 1, mas sem ser Diretor :
-/*
-INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
-VALUES (2, "12345678-9", "xxxxxxxxx-x","Professor_Mestre", false);
-*/
+	#	Consulta_Exemplo_1 )
+SELECT  *
+FROM 	contato AS cont, pessoa AS pes
+WHERE	cont.codAluno = pes.codigo;
 
-select * 
+
+
+
+		#		Alteracao 2 )
+    
+    
+	#	2.1 )	Criando FUNCAO para trocar Diretor :
+    
+DELIMITER **
+CREATE FUNCTION subst_Diretor(cod_newDiretor INT,  cod_oldDiretor INT) RETURNS INT
+DETERMINISTIC
+BEGIN
+		#	Verifica se era diretor
+	
+    SET	@resu = EXISTS (
+		 SELECT *
+		 FROM	professor AS prof
+		 WHERE	prof.codigo = cod_oldDiretor
+    );
+    
+    IF	@resu = 1	
+    THEN		#	Atualiza direçao ao novo diretor	
+		BEGIN
+			UPDATE  professor 
+			SET		isDiretor = true
+			WHERE	codigo = cod_newDiretor;
+		END;
+        
+		
+        BEGIN	
+				#	Insere valor novo na tabela Direcao
+                
+			SET	 @esc =
+            (
+				SELECT  codEscola
+				FROM 	Pessoa AS pes, Professor AS prof
+				WHERE 	pes.codigo = prof.codigo
+				AND		prof.codigo = cod_newDiretor
+			);
+            
+			INSERT INTO direcao (codEsc, codProf)
+			VALUES (@esc, cod_newDiretor);
+            
+
+		END;
+        
+		RETURN 1;
+
+	ELSE
+		RETURN 0;
+        
+	END IF;
+    
+END **
+DELIMITER ;
+
+
+	#	2.2 )	Atribuir um codPros existente às vars 
+SET 	@codProf_delProf  	 = 	13 ;
+SET 	@codProf_novoDiretor = 	16 ;
+
+
+	#	2.3) 	Troca cargos de direção, excluindo direçao antiga e repondo ao novo diretor :
+SET 	@verify = subst_Diretor(@codProf_novoDiretor,  @codProf_delProf );
+SELECT 	@verify;
+
+
+	#	2.3 )	Por fim, exclui professor alvo :
+DELETE  
+FROM 	Professor AS prof
+WHERE	prof.codigo = @codProf_delProf ;
+
+
+	#	Consulta_Exemplo_2 )
+    
+SELECT  * 
 FROM 	professor AS prof, pessoa AS pes
 WHERE 	prof.codigo = pes.codigo ;
 
+SELECT  * 
+FROM 	Direcao;
 
 
-	#	Alteracao 3)
 
-/*	 3.1)	 Sai professora Bonanza(10), entra Duny(11),
+
+	#	Alteracao 3 )
+
+
+	#	 	3.1)	Atribuir um codigo existente às vars :	 
+SET		@codProf_replacing =  10 ;
+SET 	@codProf_isReplaced = 14 ;
+
+
+/*	*****************************************************************	*/
+
+
+	/*		Salva dados do professor sendo substituido,
+		para volta do mesmo às aulas, após seu recesso :	*/
+        
+
+	CREATE TEMPORARY TABLE IF NOT EXISTS isReplaced_minProf
+	AS  
+    ( 
+		SELECT  *
+		FROM 	ministra AS min
+		WHERE	min.codProf = @codProf_replacing
+	) ;
+
+/*	*****************************************************************	*/
+
+
+	/*	 	3.2)	 	Sai professora Bonanza(10), entra Duny(11),
 			mantendo os dados antigos de Duny, ja que a mesma ministra disciplina(5) :	*/
-UPDATE	 ministra
-SET		 codProf = 11
-WHERE	 codProf = 10 AND codDisc != 5 ;
+            
+UPDATE 	 ministra
+SET		 codProf = @codProf_replacing
+WHERE	 codProf = @codProf_isReplaced
+AND codDisc NOT IN 
+(
+	SELECT *
+    FROM
+    (
+		SELECT ministra.codDisc
+        FROM ministra
+		WHERE codProf = @codProf_replacing
+		AND codDisc = ministra.codDisc
+		AND codTurma = ministra.codTurma
+		AND codEsc = ministra.codEsc
+	) AS f
+);
 
-/*	 3.2)	 Reverte substituição, retornando os antigos dados de Bonanza,
-			ainda mantendo os dados antigos de Duny :	*/
-UPDATE	 ministra
-SET		 codProf = 10
-WHERE	 codProf = 11 AND codDisc != 5;
+
+	/*		3.3 )	Ao retorno do professor em recesso,
+		inserir novamente seus dados guardados à tabela Ministra :			*/
+        
+INSERT INTO 	ministra 
+SELECT * FROM	isReplaced_minProf ;
 
 
-SELECT	 *
-FROM 	 pessoa AS pes, professor AS prof, ministra AS min
-WHERE 	 pes.codigo = prof.codigo
-AND		 pes.codEscola = min.codEsc
-AND		 prof.codigo = min.codProf ;
+
+/*	Consulta_Exemplo_3 ) */
+
+SELECT	 	min.codEsc AS cod_Escola, min.codProf AS cod_Prof,
+			pes.nome As nome_Prof,  min.codTurma AS cod_Turma, min.codDisc AS cod_Disciplina 
+            
+FROM 		pessoa AS pes, professor AS prof, ministra AS min
+WHERE 	 	pes.codigo = prof.codigo
+AND		 	pes.codEscola = min.codEsc
+AND		 	prof.codigo = min.codProf 
+ORDER BY	min.codDisc, min.codEsc, min.codTurma, pes.nome ;
+
