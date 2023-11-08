@@ -34,7 +34,7 @@ DELIMITER **
 CREATE FUNCTION subst_Diretor(cod_newDiretor INT,  cod_oldDiretor INT) RETURNS INT
 DETERMINISTIC
 BEGIN
-		#	Verifica se era diretor
+		#	Verifica se diretor ainda esta registrado
 	
     SET	@resu = EXISTS (
 		 SELECT *
@@ -44,11 +44,11 @@ BEGIN
     
     IF	@resu = 1	
     THEN		#	Atualiza direçao ao novo diretor	
-		BEGIN
-			UPDATE  professor 
-			SET		isDiretor = true
-			WHERE	codigo = cod_newDiretor;
-		END;
+		 BEGIN
+			 UPDATE  professor 
+			 SET		isDiretor = true
+			 WHERE	codigo = cod_newDiretor;
+		 END;
         
 		
         BEGIN	
