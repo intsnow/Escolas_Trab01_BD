@@ -118,15 +118,16 @@ CREATE TABLE IF NOT EXISTS Ministra(
 
 CREATE TABLE IF NOT EXISTS Direcao
 (
-	codEsc	integer not null,
-    codProf integer not null,
-    
-    CONSTRAINT fk_direcao_codEsc
+		codEsc	integer not null,
+   codProf integer not null,
+		primary key (codEsc, codProf),    
+
+   CONSTRAINT fk_direcao_codEsc
 		foreign key (codEsc) references Escola(codigo)
         ON DELETE CASCADE
-        ON UPDATE CASCADE	,
+        ON UPDATE CASCADE					,
         
-    CONSTRAINT fk_direcao_codProf
+   CONSTRAINT fk_direcao_codProf
 		foreign key (codProf) references Professor(codigo)
         ON DELETE CASCADE
         ON UPDATE CASCADE		
