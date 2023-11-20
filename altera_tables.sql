@@ -34,7 +34,7 @@ DELIMITER **
 CREATE FUNCTION subst_Diretor(cod_newDiretor INT,  cod_oldDiretor INT) RETURNS INT
 DETERMINISTIC
 BEGIN
-		#	Verifica se diretor ainda esta registrado
+		#	Verifica se era diretor
 	
     SET	@resu = EXISTS (
 		 SELECT *
@@ -44,11 +44,11 @@ BEGIN
     
     IF	@resu = 1	
     THEN		#	Atualiza direçao ao novo diretor	
-		 BEGIN
-			 UPDATE  professor 
-			 SET		isDiretor = true
-			 WHERE	codigo = cod_newDiretor;
-		 END;
+		BEGIN
+			UPDATE  professor 
+			SET		isDiretor = true
+			WHERE	codigo = cod_newDiretor;
+		END;
         
 		
         BEGIN	
@@ -111,8 +111,8 @@ FROM 	Direcao;
 
 
 	#	 	3.1)	Atribuir um codigo existente às vars :	 
-SET		@codProf_replacing =  10 ;
-SET 	@codProf_isReplaced = 14 ;
+SET		@codProf_replacing =  14 ;
+SET 	@codProf_isReplaced = 10 ;
 
 
 /*	*****************************************************************	*/
@@ -133,8 +133,8 @@ SET 	@codProf_isReplaced = 14 ;
 /*	*****************************************************************	*/
 
 
-	/*	 	3.2)	 	Sai professora Bonanza(10), entra Duny(11),
-			mantendo os dados antigos de Duny, ja que a mesma ministra disciplina(5) :	*/
+	/*	 	3.2)	 	Sai professora Bonanza(10), entra Fernando(14),
+			mantendo os dados antigos de Fernando :	*/
             
 UPDATE 	 ministra
 SET		 codProf = @codProf_replacing

@@ -25,7 +25,7 @@ VALUES (2, "Escola_2", 31);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
 VALUES (1, "Neves", "21 98285-1405", 21, 1);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
-VALUES (2, "Marcio", "xxxx-xxxx", 21, 1);
+VALUES (2, "Marcio", "xxxx-xxxx", 29, 1);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
 VALUES (3, "Alex Souza", "21 yyyy-yyyy", 21, 2);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
@@ -33,13 +33,13 @@ VALUES (4, "Otaviana Souza", "2156-66-6", 31, 2);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
 VALUES (5, "Chris Silva ", "3436-22-6", 21, 1);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
-VALUES (6, "Erick Barbosa ", "21 91234-3212", 21, 1);
+VALUES (6, "Erick Barbosa ", "21 91234-3212", 31, 2);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
 VALUES (7, "En ", "21 92321-2132", 27, 1);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
 VALUES (8, "Fer ", "21 92321-2121", 27, 1);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
-VALUES (9, "Meira ", "21 92321-2100", 27, 1);
+VALUES (9, "Meira ", "21 92321-2100", 31, 2);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
 VALUES (10, "Bonanza Nascimento ", "21 92321-2100", 27, 1);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
@@ -54,12 +54,14 @@ INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
 VALUES (15, "Amanda ", "27 94369- 9723", 27, 1);
 INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
 VALUES (16, "Emanuel ", "21 94532- 4321", 21, 2);
+INSERT INTO pessoa (codigo, nome, telefone, codCidade, codEscola)
+VALUES (17, "Portgas. D. Ace ", "21 94152- 4871", 21, 1);
 
  
 INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
 VALUES (2, "12345678-9", "xxxxxxxxx-x","Professor_Mestre", true);
 INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
-VALUES (3, "66.666.666-6", "666.666.666-6","Doutor", true);
+VALUES (3, "66.666.666-6", "666.666.666-6","Doutor", false);
 INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
 VALUES (10, "65.987.352-8", "987.654.321-9","Professor", false);
 INSERT INTO professor (codigo, RG, CPF, titulo, isDiretor)
@@ -137,8 +139,6 @@ VALUES (16, 2, 601, 2);
 INSERT INTO direcao (codEsc, codProf)
 VALUES (1, 2);
 INSERT INTO direcao (codEsc, codProf)
-VALUES (1, 3);
-INSERT INTO direcao (codEsc, codProf)
 VALUES (2, 13);
 
 
@@ -151,15 +151,17 @@ VALUES (4, 662, "25/01/1985", 606);
 INSERT INTO aluno (codigo, matricula, dataNasc, codTurma)
 VALUES (5, 5478, "20/03/1999", 103);
 INSERT INTO aluno (codigo, matricula, dataNasc, codTurma)
-VALUES (6, 34212, "12/04/2004", 101);
+VALUES (6, 34212, "12/04/2004", 601);
 INSERT INTO aluno (codigo, matricula, dataNasc, codTurma)
 VALUES (7, 0077, "16/06/2004", 103);
 INSERT INTO aluno (codigo, matricula, dataNasc, codTurma)
 VALUES (8, 0078, "16/06/2004", 103);
 INSERT INTO aluno (codigo, matricula, dataNasc, codTurma)
-VALUES (9, 0079, "16/06/2004", 103);
+VALUES (9, 0079, "16/06/2004", 601);
 INSERT INTO aluno (codigo, matricula, dataNasc, codTurma)
 VALUES (12, 0251, "10/08/1999", 103);
+INSERT INTO aluno (codigo, matricula, dataNasc, codTurma)
+VALUES (17, 0513, "12/04/2001", 103);
 
 
 INSERT INTO contato (nome, telefone, codAluno, codEscola)
@@ -171,10 +173,10 @@ VALUES ("Otaviano", "27 93241-4356", 7, 1);
 INSERT INTO contato (nome, telefone, codAluno, codEscola)
 VALUES ("Otaviano", "27 93241-4356", 8, 1);
 INSERT INTO contato (nome, telefone, codAluno, codEscola)
-VALUES ("Otaviano", "27 93241-4356", 9, 1);
+VALUES ("Otaviano", "27 93241-4356", 9, 2);
 INSERT INTO contato (nome, telefone, codAluno, codEscola)
 VALUES ("Luiza", "27 95472-3251", 7, 1);
 INSERT INTO contato (nome, telefone, codAluno, codEscola)
 VALUES ("Luiza", "27 95472-3251", 8, 1);
 INSERT INTO contato (nome, telefone, codAluno, codEscola)
-VALUES ("Luiza", "27 95472-3251", 9, 1);
+VALUES ("Luiza", "27 95472-3251", 9, 2);

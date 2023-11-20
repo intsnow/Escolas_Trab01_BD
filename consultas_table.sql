@@ -8,11 +8,20 @@ use Escola;
 #		Consulta 1)
 SELECT      esc.nome AS nome_Escola, cid.nome AS Cidade_Escola 
 
-FROM 	    escola AS esc, cidade AS cid, pessoa AS pes, aluno AS alu 
-WHERE  	    esc.codCidade = cid.codigo
-AND	 	    pes.codigo = alu.codigo  
-AND  	    esc.codigo = pes.codEscola
+FROM 	    ( escola AS esc JOIN cidade AS cid ON esc.codCidade = cid.codigo ),
+			pessoa AS pes, aluno AS alu 
+  	    
+WHERE	 	pes.codigo = alu.codigo  
+AND  	    esc.codigo = pes.codEscola 
 AND 	    esc.codCidade = pes.codCidade
+AND			esc.nome   NOT IN
+(
+	SELECT 	esc.nome
+    FROM 	pessoa As pes, escola AS esc, aluno AS alu
+    WHERE 	pes.codCidade <> esc.codCidade
+    AND	  	alu.codigo = pes.codigo
+	AND   	esc.codigo = pes.codEscola 
+)
 GROUP BY	esc.nome, cid.nome;
 
 
@@ -65,7 +74,7 @@ FROM
 (		#	Relaciona Num_Profs para cada disciplina POR TURMA
 
 	SELECT	    esc.nome AS nome_Escola, disc.nome AS nome_Disciplina,
-				count(DISTINCT min.codProf) AS numProfs_Ministram_MesmaTurma, tur.nome AS nome_Turma  
+				count(DISTINCT min.codProf) AS numProfs_MinistrDiscplina_porTurma, tur.nome AS nome_Turma  
 
 	FROM 	    ( escola AS esc, professor AS prof ) 
 	JOIN 	    
@@ -84,7 +93,7 @@ JOIN
 (		#	Relaciona Num_Profs_Totais de cada disciplina POR ESCOLA
 
 	SELECT      esc.nome AS nome_Escola, disc.nome AS nome_Disciplina,
-				count(DISTINCT min.codProf ) AS numProfs_Total_porEscola
+				count(DISTINCT min.codProf ) AS numProfsTotal_MinistrDisciplina_porEscola
                 
 	FROM 	    ( escola AS esc, professor AS prof ) 
 	JOIN	   	    
